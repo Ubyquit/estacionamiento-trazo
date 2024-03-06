@@ -1,20 +1,30 @@
-//! OJO SE AJUSTA SOLO A 2 FILAS, SI SE QUIEREN MAS SE TIENE QUE AJUSTAR EL ALTO Y LOS PUNTOS DE QUIEBRE.
-
 // Variables
-const anchoCajon = 50; // Ajustar según escala
+const anchoCajon = 90; // Ajustar según escala
 const altoCajon = 150; // Ajustar según escala
 const margen = 20;
 const filas = 2;
-const columnas = 19; // Ajustar el numero de columnas segun la necesidad del estacionamiento
+const columnas = 5;
 const cajones = [];
 let cajonSeleccionado = null;
 let cajonesOcupados = []; // Lista de cajones ocupados
 let lienzo;
 let rutaLinea;
 
+// Imágenes SVG disponibles
+const imagenesSVG = [
+  "./img/Slice-1.svg",
+  "./img/Slice-2.svg",
+  "./img/Slice-3.svg",
+  "./img/Slice-4.svg",
+  "./img/Slice-5.svg",
+  "./img/Slice-6.svg",
+  "./img/Slice-7.svg",
+  "./img/Slice-8.svg",
+];
+
 // Función para dibujar el estacionamiento
 function dibujarEstacionamiento() {
-  lienzo = Raphael("estacionamiento", 1500, 400);
+  lienzo = Raphael("estacionamiento", 1000, 400);
 
   for (let i = 0; i < filas; i++) {
     for (let j = 0; j < columnas; j++) {
@@ -24,7 +34,7 @@ function dibujarEstacionamiento() {
       cajon.attr({
         fill: "#ffffff",
         stroke: "#000000",
-        "stroke-width": 2,
+        "stroke-width": 5,
       });
       const numeroCajon = i * columnas + j + 1;
       cajon.data("numero", numeroCajon);
@@ -40,17 +50,20 @@ function dibujarEstacionamiento() {
 
       // Verificar si el cajón está ocupado
       if (cajonesOcupados.includes(numeroCajon)) {
-        cajon.attr({ fill: "#ff0000" }); // Marcar en rojo si está ocupado
+        const imagenRandom = imagenesSVG[Math.floor(Math.random() * imagenesSVG.length)];
+        const imagen = lienzo.image(imagenRandom, x + 0.15 * anchoCajon, y + 0.15 * altoCajon, 0.7 * anchoCajon, 0.7 * altoCajon);
+        cajon.data("imagen", imagen); // Guardar referencia a la imagen en el cajón
       }
 
       // Agregar evento click a cada cajón
       cajon.click(function () {
-        if (!cajonSeleccionado || cajonSeleccionado !== cajon) {
+        if (!cajonSeleccionado || (cajonSeleccionado !== cajon && !cajonesOcupados.includes(cajon.data("numero")))) {
           if (cajonSeleccionado) {
+            cajonSeleccionado.show(); // Mostrar cajón anterior si estaba ocupado
             cajonSeleccionado.attr({ fill: "#ffffff" }); // Restaurar color del cajón anterior
           }
           cajonSeleccionado = cajon;
-          cajon.attr({ fill: "#ff9999" }); // Cambiar color del cajón seleccionado
+          cajon.hide(); // Ocultar cajón seleccionado
           mostrarRuta(this.data("numero"));
         }
       });
@@ -70,28 +83,30 @@ function mostrarRuta(numeroCajon) {
   const xCajon = margen + columna * (anchoCajon + margen) + anchoCajon / 2;
   const yCajon = margen + fila * (altoCajon + margen) + altoCajon / 2;
 
-  // Dibujar la línea
-  rutaLinea = lienzo.path(`M0,0L0,180L${xCajon},180L${xCajon},${yCajon}`);
-  rutaLinea.attr({
-    stroke: "#0000ff",
-    "stroke-width": 5,
-  });
+  // Dibujar la línea si el cajón no está ocupado
+  if (!cajonesOcupados.includes(numeroCajon)) {
+    rutaLinea = lienzo.path(`M0,0L0,180L${xCajon},180L${xCajon},${yCajon}`);
+    rutaLinea.attr({
+      stroke: "#0000ff",
+      "stroke-width": 5,
+    });
 
-  // Animación de la línea
-  rutaLinea.animate({
-    path: `M0,0L0,180L${xCajon},180L${xCajon},${yCajon}`,
-    duration: 1000,
-  });
+    // Animación de la línea
+    rutaLinea.animate({
+      path: `M0,0L0,180L${xCajon},180L${xCajon},${yCajon}`,
+      duration: 1000,
+    });
+  }
 
   // Mostrar texto de la ruta
   const rutaTexto = document.getElementById('rutaTexto');
-  rutaTexto.textContent = `Ruta hacia el cajón ${numeroCajon}`;
+  rutaTexto.textContent = cajonesOcupados.includes(numeroCajon) ? `Cajón ${numeroCajon} ocupado` : `Ruta hacia el cajón ${numeroCajon}`;
 }
 
-// Simulación de cajones ocupados
-cajonesOcupados.push(2); // Ejemplo: cajón 2 ocupado
-cajonesOcupados.push(7); // Ejemplo: cajón 7 ocupado
-cajonesOcupados.push(1); // Ejemplo: cajón 7 ocupado
+// Simulación de cajones ocupados (aleatoriamente)
+for (let i = 0; i < 4; i++) {
+  cajonesOcupados.push(Math.floor(Math.random() * 10) + 1);
+}
 
 // Inicializar el estacionamiento
 dibujarEstacionamiento();
