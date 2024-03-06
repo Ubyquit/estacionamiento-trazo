@@ -1,9 +1,11 @@
+// ! OJO SE AJUSTA SOLO A 2 FILAS, SI SE QUIEREN MAS SE TIENE QUE AJUSTAR EL ALTO Y LOS PUNTOS DE QUIEBRE.
+
 // Variables
 const anchoCajon = 50; // Ajustar según escala
 const altoCajon = 150; // Ajustar según escala
 const margen = 20;
 const filas = 2;
-const columnas = 5;
+const columnas = 19; // Ajustar el numero de columnas segun la necesidad del estacionamiento
 const cajones = [];
 let cajonSeleccionado = null;
 let cajonesOcupados = []; // Lista de cajones ocupados
@@ -12,7 +14,7 @@ let rutaLinea;
 
 // Función para dibujar el estacionamiento
 function dibujarEstacionamiento() {
-  lienzo = Raphael("estacionamiento", 500, 400);
+  lienzo = Raphael("estacionamiento", 1500, 400);
 
   for (let i = 0; i < filas; i++) {
     for (let j = 0; j < columnas; j++) {
@@ -22,7 +24,7 @@ function dibujarEstacionamiento() {
       cajon.attr({
         fill: "#ffffff",
         stroke: "#000000",
-        "stroke-width": 1,
+        "stroke-width": 2,
       });
       const numeroCajon = i * columnas + j + 1;
       cajon.data("numero", numeroCajon);
@@ -88,6 +90,7 @@ function mostrarRuta(numeroCajon) {
 
 // Simulación de cajones ocupados
 cajonesOcupados.push(2); // Ejemplo: cajón 2 ocupado
+cajonesOcupados.push(7); // Ejemplo: cajón 7 ocupado
 cajonesOcupados.push(1); // Ejemplo: cajón 7 ocupado
 
 // Inicializar el estacionamiento
