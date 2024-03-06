@@ -1,4 +1,4 @@
-// ! OJO SE AJUSTA SOLO A 2 FILAS, SI SE QUIEREN MAS SE TIENE QUE AJUSTAR EL ALTO Y LOS PUNTOS DE QUIEBRE.
+//! OJO SE AJUSTA SOLO A 2 FILAS, SI SE QUIEREN MAS SE TIENE QUE AJUSTAR EL ALTO Y LOS PUNTOS DE QUIEBRE.
 
 // Variables
 const anchoCajon = 50; // Ajustar según escala
@@ -74,7 +74,7 @@ function mostrarRuta(numeroCajon) {
   rutaLinea = lienzo.path(`M0,0L0,180L${xCajon},180L${xCajon},${yCajon}`);
   rutaLinea.attr({
     stroke: "#0000ff",
-    "stroke-width": 2,
+    "stroke-width": 5,
   });
 
   // Animación de la línea
